@@ -1,0 +1,36 @@
+services:
+  backend:
+    build: ./backend
+    image: ausaafshk/backend:latest
+    ports:
+      - "5001:5001"
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+
+  frontend:
+    build: ./frontend
+    image: ausaafshk/frontend:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    environment:
+      BACKEND_URL: "http://backend:5001/api/data"
+
+  logger:
+    build: ./logger
+    image: ausaafshk/logger:latest
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
